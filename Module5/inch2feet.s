@@ -31,6 +31,7 @@ main:
 
     LDR lr, [sp] //POP stack
     ADD sp, sp, #4
+    MOV pc, lr
 
 .data
     formatString: .asciz "%d"
