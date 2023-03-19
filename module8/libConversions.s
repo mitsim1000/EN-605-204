@@ -92,9 +92,14 @@ InchesToFt:
     SUB sp, sp, #4
     STR lr, [sp, #0]
 
-    #Divide number of feet by 12
+    #Divide number of feet by 12 (in r0)
     MOV r1, #12
     BL __aeabi_idiv 
+
+    #Calculate the remaining inches (in r1)
+    MOV r1, #12
+    MUL r4, r0, r1
+    SUB r1, r4, r1
 
     #Pop stack
     LDR lr, [sp]
