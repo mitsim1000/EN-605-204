@@ -39,7 +39,7 @@ miles2kilometers:
 
 
 .text
-#Function to convert miles (in r1) and hours (in r0) to kph which is returned in r0
+#Function to convert miles (in r0) and hours (in r1) to kph which is returned in r0
 kph:
 
     #Push Stack
@@ -47,16 +47,19 @@ kph:
     STR lr, [sp, #0]
 
     #Convert miles into kilometers (in r0)
-    MOV r0, r1
+    MOV r4, r1
     BL miles2kilometers
 
     #Convert kilometers (in r0) and hours into kph
-    LDR r1, =hours
-    LDR r1, [r1, #0]
+    MOV r1, r4
     BL __aeabi_idiv
 
+    #Pop Stack
+    LDR lr, [sp]
+    ADD sp, sp, #4
+    MOV pc, lr
+
 .data
-    hours: .word 0
 #END kph
 
 
@@ -85,7 +88,7 @@ CToF:
 
 
 .text
-#Function to convert inches (in r0) to feet (in r0)
+#Function to convert inches (in r0) to feet (in r0) and inches (in r1)
 InchesToFt:
 
     #Push Stack
@@ -93,12 +96,13 @@ InchesToFt:
     STR lr, [sp, #0]
 
     #Divide number of feet by 12 (in r0)
+    MOV r4, r0
     MOV r1, #12
     BL __aeabi_idiv 
 
     #Calculate the remaining inches (in r1)
     MOV r1, #12
-    MUL r4, r0, r1
+    MUL r1, r0, r1
     SUB r1, r4, r1
 
     #Pop stack
