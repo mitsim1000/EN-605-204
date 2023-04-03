@@ -42,7 +42,7 @@ main:
     output: .asciz "\n Maximum integer is: %d\n"
 
 .text
-#Finds the ma0ximum of 3 integers
+#Finds the maximum of 3 integers
 maxInt:
 
     #Push stack
@@ -51,12 +51,12 @@ maxInt:
 
     #Compare first two ints
     CMP r0, r1
-    BLE CompareInt2
+    BLE compareNext
       MOV r1, r0
-      B CompareInt2
+      B compareNext
   
 #Compare 3rd int to maximum of first two ints
-CompareInt2:
+compareNext:
     CMP r1, r2
     BLE end
         MOV r2, r1
