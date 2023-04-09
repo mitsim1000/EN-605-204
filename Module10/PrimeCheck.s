@@ -42,6 +42,56 @@ main:
         BLE InputError
             B primeCheck
     primeCheck:
+        #Get n/2
+        MOV r0, r6
+        MOV r1, #2
+        BL __aeabi_idiv
+       
+        #Set r5 to n/2 - 2
+        SUB r5, r0, #2
+
+        #Initialize rest of the variables
+        MOV r4, #0
+        MOV r7, #2 #Starting divisor
+        MOV r8, #1 #Input is prime until we find a divisor
+
+        #Start prime checking loop
+        primeCheckLoop:
+            #Check the limit
+            CMP r4, r5
+            BGE endPrimeCheckLoop
+
+            #Loop Statement (Check if input can be divided by current divisor (r7))
+            MOV r0, r6
+            MOV r1, r7
+            BL findRemainder
+            CMP r0, #0
+            MOVEQ r8, #0
+            BEQ endPrimeCheckLoop
+
+            #Get the next value
+            ADD r4, r4, #1
+            ADD r7, r7, #1
+            B primeCheckLoop
+
+       endPrimeCheckLoop:
+            #Move r6 (user input) into r1, and print result
+            MOV r1, r6
+            CMP r8, #1
+            BEQ isPrime
+                B isNotPrime
+           
+           isPrime:
+               #Print result and go back to initial loop
+               LDR r0, =isPrime
+               BL printf
+               B StartLoop
+
+           isNotPrime:
+               #Print result and go back to initial loop
+               LDR r0, =isNotPrime
+               BL printf
+               B StartLoop
 
     InputError:
         LDR r0, =invalidError
@@ -69,3 +119,5 @@ main:
     format: "%d"
     numInput: .word 0
     exit: .asciz "\nExiting Program."
+    isPrime: .asciz "\n%d is prime."
+    isNotPrime: .asciz "\n%d is not prime."
