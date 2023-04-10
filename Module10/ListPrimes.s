@@ -26,27 +26,26 @@ main:
     STR r8, [sp, #20]
     STR r9, [sp, #24]
     
-        #Prompt user for number and store it in r6
-        LDR r0, =prompt
-        BL printf
-        LDR r0, =format
-        LDR r1, =numInput
-        BL scanf
-        LDR r9, =numInput
-        LDR r9, [r9, #0]
+    #Prompt user for number and store it in r9
+    LDR r0, =prompt
+    BL printf
+    LDR r0, =format
+    LDR r1, =numInput
+    BL scanf
+    LDR r9, =numInput
+    LDR r9, [r9, #0]
 
-        #If user enters -1, exit
-        CMP r9, #-1
-        BEQ EndLoop
-
-        #If user enters less than 2, print invalid input error
-        CMP r9, #2
-        BLE InputError
+    #If user enters less than 2, print invalid input error
+    CMP r9, #2
+    BLE InputError
 
     #Initialize
-    MOV r6, #3
+    MOV r6, #2
     
     StartLoop:
+        #Increment r6
+        ADD r6, r6, #1
+
         #Check the limit    
         CMP r6, r9 
         BGE EndLoop
@@ -54,9 +53,7 @@ main:
         #Loop statement
         B primeCheck
 
-        #Get Next
-        ADD r6, r6, #1
-        B StartLoop
+        
 
     primeCheck:
         #Get n/2 - 2
@@ -97,15 +94,13 @@ main:
             BEQ isPrime
                 B isNotPrime
            
+           isNotPrime:
+               #Go back to initial loop
+               B StartLoop
+
            isPrime:
                #Print result and go back to initial loop
                LDR r0, =isPrimeOutput
-               BL printf
-               B StartLoop
-
-           isNotPrime:
-               #Print result and go back to initial loop
-               LDR r0, =isNotPrimeOutput
                BL printf
                B StartLoop
 
@@ -135,7 +130,6 @@ main:
     numInput: .word 0
     exit: .asciz "\nExiting Program."
     isPrimeOutput: .asciz "\n%d is prime."
-    isNotPrimeOutput: .asciz "\n%d is not prime."
 
 .text
 findRemainder:
