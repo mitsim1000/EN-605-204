@@ -44,16 +44,15 @@ main:
             B primeCheck
 
     primeCheck:
-        #Get n/2
+        #Get n/2 - 2
         MOV r0, r6
         MOV r1, #2
         BL __aeabi_idiv
-       
-        #Set r5 to n/2 - 2
-        SUB r5, r0, #2
+        SUB r0, r0, #2
 
         #Initialize rest of the variables
         MOV r4, #0
+        MOV r5, r0
         MOV r7, #2 
         MOV r8, #1 
 
@@ -129,10 +128,10 @@ findRemainder:
     SUB sp, sp, #4
     STR lr, [sp, #0]
 
-    #Store dividend in r4 and divisor in r3
-    LDR r4, =dividend
+    #Store dividend in r2 and divisor in r3
+    LDR r2, =dividend
     LDR r3, =divisor
-    STR r0, [r4, #0]
+    STR r0, [r2, #0]
     STR r1, [r3, #0]
      
     #Find quotient
