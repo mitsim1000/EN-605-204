@@ -4,6 +4,7 @@
 # Purpose: Program to check if a number is prime
 
 .global main
+.global findRemainder
 
 .text
 main:
@@ -30,7 +31,7 @@ main:
         LDR r0, =format
         LDR r1, =numInput
         BL scanf
-        LDR r6, =num
+        LDR r6, =numInput
         LDR r6, [r6, #0]
 
         #If user enters -1, exit
@@ -52,8 +53,8 @@ main:
 
         #Initialize rest of the variables
         MOV r4, #0
-        MOV r7, #2 #Starting divisor
-        MOV r8, #1 #Input is prime until we find a divisor
+        MOV r7, #2 
+        MOV r8, #1 
 
         #Start prime checking loop
         primeCheckLoop:
@@ -83,13 +84,13 @@ main:
            
            isPrime:
                #Print result and go back to initial loop
-               LDR r0, =isPrime
+               LDR r0, =isPrimeOutput
                BL printf
                B StartLoop
 
            isNotPrime:
                #Print result and go back to initial loop
-               LDR r0, =isNotPrime
+               LDR r0, =isNotPrimeOutput
                BL printf
                B StartLoop
 
@@ -112,12 +113,49 @@ main:
     LDR r8, [sp, #20]
     ADD sp, sp, #24
     MOV pc, lr
-  
+ 
 .data
     prompt: .asciz "\nEnter an integer: \n"
     invalidError: .asciz "\nYou must enter a number greater than 3.\n"
-    format: "%d"
+    format: .asciz "%d"
     numInput: .word 0
     exit: .asciz "\nExiting Program."
-    isPrime: .asciz "\n%d is prime."
-    isNotPrime: .asciz "\n%d is not prime."
+    isPrimeOutput: .asciz "\n%d is prime."
+    isNotPrimeOutput: .asciz "\n%d is not prime."
+.text
+findRemainder:
+#Function that returns 1 if r0/r1 has a remainder. Otherwise, returns 0.
+     #Push Stack
+     SUB sp, sp, #4
+     STR lr, [sp, #0]
+
+       # store dividend and divisor
+  LDR r2, =dividend
+  LDR r3, =divisor
+  STR r0, [r2, #0]
+  STR r1, [r3, #0]
+
+  # compute quotient
+  BL __aeabi_idiv
+  LDR r1, =quotient
+  STR r0, [r1, #0]
+
+  # compute remainder and store in r0
+  LDR r0, =dividend
+  LDR r1, =divisor
+  LDR r2, =quotient
+  LDR r0, [r0, #0]
+  LDR r1, [r1, #0]
+  LDR r2, [r2, #0]
+  MUL r1, r1, r2
+  SUB r0, r0, r1
+
+     #Pop Stack
+     LDR lr, [sp, #0]
+     ADD sp, sp, #4
+     MOV pc, lr
+
+.data
+    dividend: .word 0
+    divisor: .word 0
+    quotient: .word 0
