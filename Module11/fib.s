@@ -11,7 +11,12 @@ main:
     SUB sp, sp, #4
     STR lr, [sp, #0]
 
-
+    #Prompt user for n
+    LDR r0, =prompt
+    BL printf
+    LDR r0, =format
+    LDR r1, =int
+    BL scanf
 
     #Pop stack
     LDR lr, [sp, #0]
@@ -23,3 +28,5 @@ main:
     format: .asciz "%d"
     int: .word 0
     output: .asciz "Corresponding Fibonacci number: %d"
+
+
