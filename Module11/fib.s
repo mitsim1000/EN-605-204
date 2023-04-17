@@ -41,39 +41,41 @@ main:
 
 .text
 Fib:
+  # push stack
+  SUB sp, sp, #12
+  STR lr, [sp]
+  STR r4, [sp, #4]
+  STR r5, [sp, #8]
 
-    #Push stack
-    SUB sp, sp, #4
-    STR lr, [sp, #0]
+  MOV r4, r0
 
-    #Move input to r4
-    MOV r4, r0
+  #Base case: n=0 return 1
+  CMP r4, #0
+  MOVEQ r0, #1
+  BEQ Return
 
-    #Base case n = 0, return 0
-    CMP r4, #0
-    MOVEQ r0, #1
-    BEQ end
-
-    #Base case n = 1, return 1
+    #Base case: n=1 return 1
     CMP r4, #1
     BNE else
       MOV r0, #1
-      B end
+      B Return
 
     #Else return Fib(n-1) + Fib(n-2)
     else:
-        SUB r0, r4, #1
-        BL Fib
-        MOV r3, r0
-        SUB r0, r3, #2
-        BL Fib
-        ADD r0, r0, r3
-        B end
+      SUB r0, r4, #1
+      BL Fib
+      MOV r5, r0
+      SUB r0, r4, #2
+      BL Fib
+      ADD r0, r0, r5
+      B Return
 
-    end:
-      #Pop stack
-      LDR lr, [sp, #0]
-      ADD sp, sp, #4
-      MOV pc, lr
+    #Pop stack
+    Return:
+    LDR lr, [sp]
+    LDR r4, [sp, #4]
+    LDR r5, [sp, #8]
+    ADD sp, sp, #12
+    MOV pc, lr
 
 .data
