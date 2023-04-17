@@ -59,26 +59,26 @@ recMult:
     SUB sp, sp, #12
     STR lr, [sp, #0]
     
-    #Move r0 and r1 inputs to r5 and r6 (r5 = m; r6 = n)
-    MOV r5, r0
-    MOV r6, r1
-
-    #Base case: if n is 1, return m
-    CMP r6, #1
-    BNE else
-        MOV r0, r5
-        B end
+    #Move r0 and r1 inputs to r5 and r6 (r3 = m; r4 = n)
+    MOV r3, r0
+    MOV r4, r1
 
     #Base case: if n is 0, return 0
-    CMP r6, #0
+    CMP r4, #0
     MOVEQ r0, #0
     BEQ end
 
+    #Base case: if n is 1, return m
+    CMP r4, #1
+    BNE else
+        MOV r0, r3
+        B end
+
     #else: return m + recMult(m, n-1)
     else:
-        SUB r1, r6, #1
+        SUB r1, r4, #1
         BL recMult
-        ADD r0, r5, r0
+        ADD r0, r3, r0
         B end
 
     end:
